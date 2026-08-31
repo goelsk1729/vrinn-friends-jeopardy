@@ -1,433 +1,94 @@
 (() => {
-  'use strict';
-
-  const VALUES = [200, 400, 600, 800, 1000];
-  const STORAGE_KEY = 'vrinn-friends-jeopardy-v1';
-
-  const boards = [
-    {
-      kicker: 'ROUND ONE',
-      title: 'The One Everyone Thinks They Know 🛋️',
-      subtitle: 'The One Everyone Thinks They Know',
-      categories: [
-        {
-          emoji: '👕',
-          title: 'Could I BE Wearing Any More Clothes?',
-          short: 'Outfits, costumes & visual gags',
-          clues: [
-            { q: 'After Chandler hides his underwear, what does Joey wear as revenge?', a: 'All of Chandler’s clothes.' },
-            { q: 'Ross can’t get his leather pants back on. Which two bathroom products does Joey suggest?', a: 'Powder and lotion.' },
-            { q: 'Monica buys Chandler a giant pink bunny costume because of his favorite childhood book. Which book?', a: 'The Velveteen Rabbit.' },
-            { q: 'At Monica and Chandler’s Halloween party, Ross combines a potato and a Soviet satellite into what costume?', a: 'Spud-nik.' },
-            { q: 'After their breakup, Ross demands back Rachel’s favorite sleep T-shirt. What three words are printed on it?', a: '“Frankie Say Relax.”' }
-          ]
-        },
-        {
-          emoji: '💔',
-          title: 'We Were on a Break!',
-          short: 'Romance, dates & disasters',
-          clues: [
-            { q: 'At his wedding to Emily, whose name does Ross accidentally say?', a: 'Rachel.' },
-            { q: 'Chandler hooks up with one of Joey’s seven sisters but forgets which one. Who was she?', a: 'Mary-Angela.' },
-            { q: 'Phoebe dates Jason and Vince at the same time. What are their professions?', a: 'A kindergarten teacher and a firefighter.' },
-            { q: 'Phoebe moves in with Gary, but it lasts one night. What does he do the next morning?', a: 'He shoots a bird chirping outside their bedroom window.' },
-            { q: 'Monica and Ethan both lie about their ages. What does each claim, and what is the truth?', a: 'Monica says she is 22 but is 26; Ethan says he is a college senior but is actually a high-school senior.' }
-          ]
-        },
-        {
-          emoji: '😱',
-          title: 'Oh. My. God.',
-          short: 'Supporting & recurring characters',
-          clues: [
-            { q: 'Which Central Perk employee spends years secretly in love with Rachel?', a: 'Gunther.' },
-            { q: 'Which downstairs neighbor leaves everything to “the noisy girls upstairs”?', a: 'Mr. Heckles.' },
-            { q: 'Which short-lived Chandler roommate watches him sleep and replaces a dead fish with a Goldfish cracker?', a: 'Eddie.' },
-            { q: 'Which former high-school heartthrob later dates Monica but still lives with his parents?', a: 'Chip Matthews.' },
-            { q: 'In Janice’s final appearance, what full name does Chandler dramatically call her?', a: 'Janice Litman-Goralnik, née Hosenstein.' }
-          ]
-        },
-        {
-          emoji: '💬',
-          title: 'Who Said It… and What Did They Say?',
-          short: 'Quotes, speakers & missing lines',
-          clues: [
-            { q: 'Who says it, and finish the line: “I’m not great at the advice. Can I interest you in a ____?”', a: 'Chandler — “sarcastic comment.”' },
-            { q: 'Who says it, and finish the line: “It’s like a cow’s opinion. It just ______.”', a: 'Joey — “doesn’t matter. It’s moo.”' },
-            { q: 'Who says it, and complete: “Isn’t that just kick-you-in-the-crotch, spit-on-your-neck, ______?”', a: 'Rachel — “fantastic.”' },
-            { q: 'Complete Joey’s response: “You don’t own a TV? What’s all your ______?”', a: '“Furniture pointed at?”' },
-            { q: 'At Thanksgiving, Monica fires back with one embarrassing fact about each of her five friends. Name all five.', a: 'Ross married a lesbian; Rachel left a man at the altar; Phoebe fell in love with a gay ice dancer; Joey threw a girl’s wooden leg in the fire; Chandler lives in a box.' }
-          ]
-        },
-        {
-          emoji: '🍕',
-          title: 'Joey Doesn’t Share Food!',
-          short: 'Food, cooking & eating moments',
-          clues: [
-            { q: 'Rachel’s trifle combines dessert with what savory filling from the stuck cookbook pages?', a: 'Beef sautéed with peas and onions.' },
-            { q: 'What exactly is the “Moist Maker” in Ross’s Thanksgiving sandwich?', a: 'An extra slice of gravy-soaked bread in the middle.' },
-            { q: 'Rachel and Chandler steal a misdelivered cheesecake. Name the bakery or its city.', a: 'Momma’s Little Bakery — Chicago, Illinois.' },
-            { q: 'During the police ride-along, Joey dives over Ross during a “gunshot.” What was he really protecting?', a: 'His meatball sandwich.' },
-            { q: 'On the “JOEY DOESN’T SHARE FOOD!” date, what dessert does Joey order, and which of Sarah’s desserts does he eat?', a: 'Joey orders cheesecake; Sarah orders chocolate torte, which Joey ultimately eats.' }
-          ]
-        }
-      ]
-    },
-    {
-      kicker: 'ROUND TWO',
-      title: 'The One for the Real Fans ☕',
-      subtitle: 'The One for the Real Fans',
-      categories: [
-        {
-          emoji: '🎬',
-          title: 'The One With…',
-          short: 'Identify the episode',
-          clues: [
-            { q: 'Monica and Rachel lose their apartment to Chandler and Joey in a trivia game. Which episode?', a: 'The One with the Embryos.' },
-            { q: 'Phoebe and Chandler try to make each other crack over Monica and Chandler’s secret relationship. Which episode?', a: 'The One Where Everybody Finds Out.' },
-            { q: 'The gang recalls disastrous Thanksgivings: turkey-head Joey and Monica severing Chandler’s toe. Which episode?', a: 'The One with All the Thanksgivings.' },
-            { q: 'Richard’s voicemail, the chair war and Phoebe’s hummus-stained dress happen in which episode?', a: 'The One Where No One’s Ready.' },
-            { q: 'Joey’s fake twin, forgotten Valentine’s gifts and Ross’s “total awareness” lesson happen in which episode?', a: 'The One with Unagi.' }
-          ]
-        },
-        {
-          emoji: '7️⃣',
-          title: 'Seven! Seven! SEVEN!',
-          short: 'Every answer is a number',
-          clues: [
-            { q: 'How many numbered erogenous zones does Monica identify for Chandler?', a: '7.' },
-            { q: 'How many pages was Rachel’s letter to Ross — front and back?', a: '18 pages.' },
-            { q: 'What number completes Chandler’s fake address: ___ Yemen Road, Yemen?', a: '15.' },
-            { q: 'In the 50-state challenge, how many “states” does Joey claim to list?', a: '56.' },
-            { q: 'How much does the encyclopedia salesman quote Joey for the full set?', a: '$1,200.' }
-          ]
-        },
-        {
-          emoji: '🤫',
-          title: 'They Don’t Know That We Know',
-          short: 'Secrets, lies & who knew what',
-          clues: [
-            { q: 'Phoebe and Rachel find a positive pregnancy test at Monica and Chandler’s wedding. Whose is it?', a: 'Rachel’s.' },
-            { q: 'Who accidentally tells Rachel that Ross loves her while Ross is in China?', a: 'Chandler.' },
-            { q: 'Ross lies that his Vegas marriage to Rachel was annulled. Which friend does he confess the truth to?', a: 'Phoebe.' },
-            { q: 'Rachel says Irene learned the backpacking story from a mysterious man. What name does he go by?', a: 'Ken Adams.' },
-            { q: 'Put Joey, Rachel, Phoebe and Ross in the order they discover Monica and Chandler’s relationship.', a: 'Joey → Rachel → Phoebe → Ross.' }
-          ]
-        },
-        {
-          emoji: '🤯',
-          title: 'WAIT… That Actually Happened?!',
-          short: 'Absurd plots & one-off chaos',
-          clues: [
-            { q: 'Ross’s spray tan goes spectacularly wrong because he counts to five using what extra word?', a: '“Mississippi.”' },
-            { q: 'On Pyramid, Joey keeps guessing three things for “It’s white.” Name all three.', a: 'Paper, snow and a ghost.' },
-            { q: 'In Joey’s old Japanese commercial, what product was he advertising?', a: 'Ichiban: Lipstick for Men.' },
-            { q: 'Ross and Chandler sabotage their college alumni profiles until Chandler announces Ross has died. According to the post, what killed him?', a: 'He was hit by a blimp.' },
-            { q: 'After leaving Ben on a bus, Joey and Chandler must choose between babies wearing ducks or clowns. Which does Joey assign to heads, and why?', a: 'The baby wearing ducks — because “ducks have heads.”' }
-          ]
-        },
-        {
-          emoji: '📝',
-          title: 'Miss Chanandler Bong',
-          short: 'Who-knows-whom-best trivia',
-          clues: [
-            { q: 'What does Chandler’s middle initial “M” stand for?', a: 'Muriel.' },
-            { q: 'What is Joey’s “bedtime penguin pal” called?', a: 'Hugsy.' },
-            { q: 'What was Monica’s nickname as a field-hockey goalie?', a: 'Big Fat Goalie.' },
-            { q: 'What was Ross’s homemade childhood superhero called?', a: 'Science Boy.' },
-            { q: 'What is the name of Chandler’s father’s Las Vegas all-male burlesque show?', a: 'Viva Las Gaygas.' }
-          ]
-        }
-      ]
-    }
-  ];
-
-  const els = {
-    homeScreen: document.getElementById('homeScreen'),
-    gameScreen: document.getElementById('gameScreen'),
-    clueScreen: document.getElementById('clueScreen'),
-    finaleScreen: document.getElementById('finaleScreen'),
-    startButton: document.getElementById('startButton'),
-    freshStartButton: document.getElementById('freshStartButton'),
-    homeButton: document.getElementById('homeButton'),
-    resetButton: document.getElementById('resetButton'),
-    board1Tab: document.getElementById('board1Tab'),
-    board2Tab: document.getElementById('board2Tab'),
-    boardTitle: document.getElementById('boardTitle'),
-    boardSubtitle: document.getElementById('boardSubtitle'),
-    roundKicker: document.getElementById('roundKicker'),
-    progressText: document.getElementById('progressText'),
-    progressPercent: document.getElementById('progressPercent'),
-    progressBar: document.getElementById('progressBar'),
-    completionBanner: document.getElementById('completionBanner'),
-    completionTitle: document.getElementById('completionTitle'),
-    completionCopy: document.getElementById('completionCopy'),
-    completionAction: document.getElementById('completionAction'),
-    jeopardyBoard: document.getElementById('jeopardyBoard'),
-    clueBackButton: document.getElementById('clueBackButton'),
-    clueBoardLabel: document.getElementById('clueBoardLabel'),
-    clueCategory: document.getElementById('clueCategory'),
-    clueValue: document.getElementById('clueValue'),
-    clueQuestion: document.getElementById('clueQuestion'),
-    clueAnswer: document.getElementById('clueAnswer'),
-    answerNote: document.getElementById('answerNote'),
-    questionStage: document.getElementById('questionStage'),
-    answerStage: document.getElementById('answerStage'),
-    revealButton: document.getElementById('revealButton'),
-    returnButton: document.getElementById('returnButton'),
-    playAgainButton: document.getElementById('playAgainButton'),
-    finaleHomeButton: document.getElementById('finaleHomeButton'),
-    resetDialog: document.getElementById('resetDialog'),
-    toast: document.getElementById('toast')
-  };
-
-  const state = loadState();
-  let activeClue = null;
-  let toastTimer = null;
-
-  function blankState() {
-    return { activeBoard: 0, played: {}, hasStarted: false };
-  }
-
-  function loadState() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return blankState();
-      const parsed = JSON.parse(raw);
-      return {
-        activeBoard: parsed.activeBoard === 1 ? 1 : 0,
-        played: parsed.played && typeof parsed.played === 'object' ? parsed.played : {},
-        hasStarted: Boolean(parsed.hasStarted)
-      };
-    } catch {
-      return blankState();
-    }
-  }
-
-  function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* no-op */ }
-  }
-
-  function clueKey(boardIndex, categoryIndex, clueIndex) {
-    return `${boardIndex}-${categoryIndex}-${clueIndex}`;
-  }
-
-  function playedCount(boardIndex) {
-    let count = 0;
-    boards[boardIndex].categories.forEach((category, ci) => {
-      category.clues.forEach((_, qi) => {
-        if (state.played[clueKey(boardIndex, ci, qi)]) count += 1;
-      });
-    });
-    return count;
-  }
-
-  function allComplete() {
-    return playedCount(0) === 25 && playedCount(1) === 25;
-  }
-
-  function showScreen(target) {
-    [els.homeScreen, els.gameScreen, els.clueScreen, els.finaleScreen].forEach(el => el.classList.add('hidden'));
-    target.classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function renderHome() {
-    const anyPlayed = Object.keys(state.played).length > 0;
-    els.startButton.textContent = state.hasStarted || anyPlayed ? 'Resume Game →' : 'Start the Game ✨';
-    els.freshStartButton.classList.toggle('hidden', !anyPlayed);
-    showScreen(els.homeScreen);
-  }
-
-  function renderBoard(boardIndex = state.activeBoard) {
-    state.activeBoard = boardIndex;
-    state.hasStarted = true;
-    saveState();
-
-    const board = boards[boardIndex];
-    const count = playedCount(boardIndex);
-    const percent = Math.round((count / 25) * 100);
-
-    els.roundKicker.textContent = board.kicker;
-    els.boardTitle.textContent = board.title;
-    els.boardSubtitle.textContent = board.subtitle;
-    els.progressText.textContent = `${count} / 25 played`;
-    els.progressPercent.textContent = `${percent}%`;
-    els.progressBar.style.width = `${percent}%`;
-    els.board1Tab.setAttribute('aria-selected', String(boardIndex === 0));
-    els.board2Tab.setAttribute('aria-selected', String(boardIndex === 1));
-
-    els.jeopardyBoard.replaceChildren();
-
-    board.categories.forEach(category => {
-      const header = document.createElement('div');
-      header.className = 'category-header';
-      header.innerHTML = `<span class="emoji" aria-hidden="true">${category.emoji}</span><strong>${escapeHtml(category.title)}</strong><small>${escapeHtml(category.short)}</small>`;
-      els.jeopardyBoard.appendChild(header);
-    });
-
-    VALUES.forEach((value, clueIndex) => {
-      board.categories.forEach((category, categoryIndex) => {
-        const key = clueKey(boardIndex, categoryIndex, clueIndex);
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = `clue-tile${state.played[key] ? ' played' : ''}`;
-        button.dataset.category = String(categoryIndex);
-        button.dataset.clue = String(clueIndex);
-        button.setAttribute('aria-label', `${category.title}, $${value}${state.played[key] ? ', played' : ''}`);
-        button.disabled = Boolean(state.played[key]);
-        button.innerHTML = `<span>$${value}</span>`;
-        button.addEventListener('click', () => openClue(categoryIndex, clueIndex));
-        els.jeopardyBoard.appendChild(button);
-      });
-    });
-
-    if (count === 25) {
-      els.completionBanner.classList.remove('hidden');
-      if (boardIndex === 0) {
-        els.completionTitle.textContent = 'Board 1 complete!';
-        els.completionCopy.textContent = 'Okay, that was the warm-up. Ready for the deep cuts?';
-        els.completionAction.textContent = 'Go to Board 2 →';
-      } else {
-        els.completionTitle.textContent = 'Board 2 complete!';
-        els.completionCopy.textContent = 'That was dangerously impressive Friends knowledge.';
-        els.completionAction.textContent = allComplete() ? 'Finish the Game ✨' : 'Back to Board 1';
-      }
-    } else {
-      els.completionBanner.classList.add('hidden');
-    }
-
-    showScreen(els.gameScreen);
-  }
-
-  function openClue(categoryIndex, clueIndex) {
-    const boardIndex = state.activeBoard;
-    const category = boards[boardIndex].categories[categoryIndex];
-    const clue = category.clues[clueIndex];
-    const value = VALUES[clueIndex];
-
-    activeClue = { boardIndex, categoryIndex, clueIndex };
-    els.clueCategory.textContent = `${category.emoji} ${category.title}`;
-    els.clueValue.textContent = `$${value}`;
-    els.clueBoardLabel.textContent = `Board ${boardIndex + 1} · ${value}`;
-    els.clueQuestion.textContent = clue.q;
-    els.clueAnswer.textContent = clue.a;
-    els.answerNote.textContent = answerReaction(value);
-    els.questionStage.classList.remove('hidden');
-    els.answerStage.classList.add('hidden');
-    showScreen(els.clueScreen);
-    els.revealButton.focus({ preventScroll: true });
-  }
-
-  function answerReaction(value) {
-    if (value <= 200) return 'A nice little confidence boost. 😌';
-    if (value <= 400) return 'Okayyy, you know your stuff. 👏';
-    if (value <= 600) return 'Strong fan territory. ☕';
-    if (value <= 800) return 'That was a proper deep cut. 🔍';
-    return 'HOW did you remember that?! 🏆';
-  }
-
-  function revealAnswer() {
-    if (!activeClue) return;
-    const { boardIndex, categoryIndex, clueIndex } = activeClue;
-    state.played[clueKey(boardIndex, categoryIndex, clueIndex)] = true;
-    saveState();
-    els.questionStage.classList.add('hidden');
-    els.answerStage.classList.remove('hidden');
-    els.returnButton.focus({ preventScroll: true });
-  }
-
-  function returnFromClue() {
-    const returnBoard = activeClue ? activeClue.boardIndex : state.activeBoard;
-    activeClue = null;
-    renderBoard(returnBoard);
-  }
-
-  function resetGame(showBoardAfter = false) {
-    state.activeBoard = 0;
-    state.played = {};
-    state.hasStarted = showBoardAfter;
-    activeClue = null;
-    saveState();
-    showToast('All clues are fresh again ✨');
-    if (showBoardAfter) renderBoard(0); else renderHome();
-  }
-
-  function showToast(message) {
-    els.toast.textContent = message;
-    els.toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 2200);
-  }
-
-  function showFinale() {
-    showScreen(els.finaleScreen);
-    sprinkleConfetti();
-  }
-
-  function sprinkleConfetti() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const colors = ['#6f4b8b', '#df7a42', '#3f90a3', '#d8524e', '#d79b17'];
-    for (let i = 0; i < 26; i += 1) {
-      const bit = document.createElement('span');
-      bit.setAttribute('aria-hidden', 'true');
-      bit.style.position = 'fixed';
-      bit.style.zIndex = '20';
-      bit.style.top = '-18px';
-      bit.style.left = `${5 + Math.random() * 90}%`;
-      bit.style.width = `${6 + Math.random() * 7}px`;
-      bit.style.height = `${8 + Math.random() * 9}px`;
-      bit.style.borderRadius = '2px';
-      bit.style.pointerEvents = 'none';
-      bit.style.background = colors[i % colors.length];
-      bit.style.transform = `rotate(${Math.random() * 180}deg)`;
-      bit.style.transition = `transform ${1.1 + Math.random() * .9}s ease-in, top ${1.1 + Math.random() * .9}s ease-in, opacity .35s ${.9 + Math.random() * .5}s`;
-      document.body.appendChild(bit);
-      requestAnimationFrame(() => {
-        bit.style.top = `${70 + Math.random() * 26}%`;
-        bit.style.transform = `translateX(${(Math.random() - .5) * 160}px) rotate(${360 + Math.random() * 540}deg)`;
-        bit.style.opacity = '0';
-      });
-      setTimeout(() => bit.remove(), 2200);
-    }
-  }
-
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  els.startButton.addEventListener('click', () => renderBoard(state.activeBoard));
-  els.freshStartButton.addEventListener('click', () => resetGame(true));
-  els.homeButton.addEventListener('click', renderHome);
-  els.board1Tab.addEventListener('click', () => renderBoard(0));
-  els.board2Tab.addEventListener('click', () => renderBoard(1));
-  els.clueBackButton.addEventListener('click', returnFromClue);
-  els.revealButton.addEventListener('click', revealAnswer);
-  els.returnButton.addEventListener('click', returnFromClue);
-  els.playAgainButton.addEventListener('click', () => resetGame(true));
-  els.finaleHomeButton.addEventListener('click', renderHome);
-
-  els.completionAction.addEventListener('click', () => {
-    if (state.activeBoard === 0) renderBoard(1);
-    else if (allComplete()) showFinale();
-    else renderBoard(0);
-  });
-
-  els.resetButton.addEventListener('click', () => {
-    if (typeof els.resetDialog.showModal === 'function') els.resetDialog.showModal();
-    else if (window.confirm('Reset all played clues?')) resetGame(true);
-  });
-
-  els.resetDialog.addEventListener('close', () => {
-    if (els.resetDialog.returnValue === 'confirm') resetGame(true);
-  });
-
-  document.addEventListener('keydown', event => {
-    if (els.clueScreen.classList.contains('hidden')) return;
-    if (event.key === 'Escape') returnFromClue();
-    if (event.key === 'Enter' && !els.questionStage.classList.contains('hidden')) revealAnswer();
-  });
-
-  renderHome();
+'use strict';
+const VALUES=[100,200,300,400,500], STORAGE_KEY='vrinn-friends-jeopardy-v3';
+const B=[
+{title:'The One Everyone Thinks They Know 🛋️',subtitle:'The iconic moments board',kicker:'ROUND ONE',cats:[
+['👕','theme-clothes','Could I BE Wearing Any More Clothes?','Outfits, costumes & visual gags',[
+['After Chandler hides his underwear, what does Joey wear as revenge?','All of Chandler’s clothes','👕','All the clothes'],
+['Ross can’t get his leather pants back on. Which two bathroom products does Joey suggest?','Powder and Lotion','🖤','Leather pants'],
+['Monica buys Chandler a giant pink bunny costume because of his favorite childhood book. Which book / What is the costume?','The Velveteen Rabbit','🐰','Pink bunny'],
+['At Monica and Chandler’s Halloween party, Ross combines a potato and a Soviet satellite into what costume?','Spud-nik','🥔📡','Spud-nik',1],
+['After their breakup, Ross demands back Rachel’s favorite sleep T-shirt. What three words are printed on it?','Frankie Say Relax','👕','FRANKIE SAY RELAX']]],
+['💔','theme-break','We Were on a Break!','Romance, dates & disasters',[
+['At his wedding to Emily, whose name does Ross accidentally say?','Rachel','💍💔','Wrong name'],
+['Chandler hooks up with one of Joey’s seven sisters but forgets which one. Who was she?','Mary-Angela','💞','Seven sisters'],
+['Phoebe dates Jason and Vince at the same time. What are their professions?','Kindergarten teacher and a Firefighter','🧑‍🏫🔥','Two dates'],
+['Phoebe moves in with Gary, but it lasts one night. What does he do the next morning?','Shooting a bird that was chirping outside their bedroom window','🐦','One very short move-in'],
+['Monica and Ethan both lie about their ages. What does each claim, and what is the truth?','Monica says she’s 22 while she is 26, and Ethan says he’s a senior in college while he is a senior in high school','🪪','Age lies',1]]],
+['😱','theme-omg','Oh. My. God.','Supporting & recurring characters',[
+['Which Central Perk employee spends years secretly in love with Rachel?','Gunther','☕','Central Perk'],
+['Which downstairs neighbor leaves everything to “the noisy girls upstairs”?','Mr Heckles','🚪','The noisy girls upstairs'],
+['Which short-lived Chandler roommate watches him sleep and replaces a dead fish with a Goldfish cracker?','Eddie','🐟','Goldfish cracker'],
+['Which former high-school heartthrob later dates Monica but still lives with his parents?','Chip Matthews','🪩','High-school heartthrob'],
+['In Janice’s final appearance, what full name does Chandler dramatically call her?','Janice Litman-Goralnik, née Hosenstein','😱','OH. MY. GOD.',1]]],
+['💬','theme-quotes','Who Said It… and What Did They Say?','Quotes, speakers & missing lines',[
+['Who says it, and finish the line: “I’m not great at the advice. Can I interest you in a ____?”','“sarcastic comment” — Chandler','💬','Sarcastic comment'],
+['Who says it, and finish the line: “It’s like a cow’s opinion. It just ______.”','“Doesn’t Matter, Its moo” — Joey','🐄','A moo point'],
+['Who says it, and complete the line: “Isn’t that just kick-you-in-the-crotch, spit-on-your-neck, ______?”','“Fantastic” — Rachel','💥','Fantastic'],
+['Who says it, and complete: “You don’t own a TV? What’s all your ______?”','“furniture pointed at?”','📺','Furniture pointed at it'],
+['At Thanksgiving, Monica fires back with one embarrassing fact about each friend. Name all five. (100/200 points each)','Ross: married a lesbian; Rachel: left a man at the altar; Phoebe: fell in love with a gay ice dancer; Joey: “threw a girl’s wooden leg in the fire.”; Chandler: “live in a box!”','📣','Thanksgiving comeback',1]]],
+['🍕','theme-food','Joey Doesn’t Share Food!','Food, cooking & eating moments',[
+['Rachel’s trifle combines dessert with what savory filling from the stuck cookbook pages?','Beef sautéed with peas and onions','🍨🥩','The trifle'],
+['During the police ride-along, Joey dives over Ross during a “gunshot.” What was he really protecting?','Meatball Sandwich','🥪🛡️','Protect the sandwich',1],
+['Rachel and Chandler steal a misdelivered cheesecake. Name the bakery or its city.','Momma’s Little Bakery in Chicago, Illinois','🍰','Cheesecake'],
+['What exactly is the “Moist Maker” in Ross’s Thanksgiving sandwich?','an extra slice of gravy-soaked bread in the middle of the sandwich','🥪💧','The Moist Maker',1],
+['On the “JOEY DOESN’T SHARE FOOD!” date, what dessert does Joey order, and which of Sarah’s desserts does he eat?','Joey orders the cheesecake; Sarah orders the chocolate torte','🍰🍫','Dessert tables turn',1]]]
+]},
+{title:'The One for the Real Fans ☕',subtitle:'The deep-cut board',kicker:'ROUND TWO',cats:[
+['🎬','theme-episodes','The One With…','Identify the episode',[
+['Monica and Rachel lose their apartment to Chandler and Joey in a trivia game. Which episode?','The One with the Embryos','🎬','Name the episode'],
+['Phoebe and Chandler try to make each other crack over Monica and Chandler’s secret relationship. Which episode?','The One Where Everybody Finds Out','👀','They know'],
+['The gang recalls disastrous Thanksgivings: turkey-head Joey and Monica severing Chandler’s toe. Which episode?','The One with All the Thanksgivings','🦃','Thanksgiving flashback',1],
+['Richard’s voicemail, the chair war and Phoebe’s hummus-stained dress happen in which episode?','The One Where No One’s Ready','🪑','The chair war'],
+['Joey’s fake twin, forgotten Valentine’s gifts and Ross’s “total awareness” lesson happen in which episode?','The One with the Unagi','🐟⚡','UNAGI',1]]],
+['7️⃣','theme-numbers','Seven! Seven! SEVEN!','Every answer is a number',[
+['How many numbered erogenous zones does Monica identify for Chandler?','7','7️⃣','Seven! Seven! Seven!',1],
+['How many pages was Rachel’s letter to Ross—front and back?','18 pages','📄📄','Front and back'],
+['What number completes Chandler’s fake address: ___ Yemen Road, Yemen?','15','✈️','15 Yemen Road'],
+['In the 50-state challenge, how many “states” does Joey claim to list?','56','🗺️','56 states?'],
+['How much does the encyclopedia salesman quote Joey for the full set?','$1200','📚','$1200']]],
+['🤫','theme-secrets','They Don’t Know That We Know','Secrets, lies & who knew what',[
+['Phoebe and Rachel find a positive pregnancy test at Monica and Chandler’s wedding. Whose is it?','Rachel’s','🧪','The pregnancy test'],
+['Who accidentally tells Rachel that Ross loves her while Ross is in China?','Chandler','✈️❤️','Ross is in China'],
+['Ross lies that his Vegas marriage to Rachel was annulled. Which friend does he confess the truth to?','Phoebe','💒','Vegas marriage'],
+['Rachel says Irene learned the backpacking story from a mysterious man. What name does he go by?','Ken Adams (Joey’s fake name)','🎒','Ken Adams',1],
+['Put Joey, Rachel, Phoebe and Ross in the order they discover Monica and Chandler’s relationship.','Joey → Rachel → Phoebe → Ross','🔑👀','Who finds out when',1]]],
+['🤯','theme-absurd','WAIT… That Actually Happened?!','Absurd plots & one-off chaos',[
+['After marrying Mike, what ridiculous name does Phoebe legally change hers to?','Princess Consuela Banana-Hammock.','👑🍌','Princess Consuela Banana-Hammock'],
+['On Pyramid, Joey keeps guessing three things for “It’s white.” Name all three.','Paper, snow, and a ghost.','🔺','Paper • Snow • Ghost'],
+['In Joey’s old Japanese commercial, what product was he advertising?','Ichiban: Lipstick for Men.','💄🔵','Ichiban',1],
+['Phoebe’s painting Gladys has an equally disturbing companion. What is it called?','Glynnis','🖼️😬','Gladys has a friend'],
+['Two-part clue: After leaving Ben on a bus, Joey and Chandler must choose between babies wearing ducks or clowns. Which does Joey assign to heads, and why? AND when Monica dances with a turkey on her head, what two accessories does she add?','The baby wearing ducks—because “ducks have heads.” AND a Shriner’s hat and big yellow sunglasses.','🦆 + 🦃😎','Two-part chaos',1]]],
+['📝','theme-personal','Miss Chanandler Bong','Who-knows-whom-best trivia',[
+['What does Chandler’s middle initial “M” stand for?','Muriel','Ⓜ️','Chandler M. Bing'],
+['What is Joey’s “bedtime penguin pal” called?','Hugsy','🐧💙','Hugsy',1],
+['What was Monica’s nickname as a field-hockey goalie?','Big Fat Goalie','🏑🥅','Big Fat Goalie'],
+['What was Ross’s homemade childhood superhero called?','Science Boy','🦸‍♂️🔬','Science Boy'],
+['What is the name of Chandler’s father’s Las Vegas all-male burlesque show?','Viva Las Gaygas.','🎰✨','Viva Las Gaygas',1]]]
+]}
+];
+const $=id=>document.getElementById(id), E={home:$('homeScreen'),game:$('gameScreen'),clue:$('clueScreen'),finale:$('finaleScreen'),start:$('startButton'),fresh:$('freshStartButton'),homeBtn:$('homeButton'),reset:$('resetButton'),b1:$('board1Tab'),b2:$('board2Tab'),title:$('boardTitle'),subtitle:$('boardSubtitle'),kicker:$('roundKicker'),prog:$('progressText'),pct:$('progressPercent'),bar:$('progressBar'),banner:$('completionBanner'),bannerTitle:$('completionTitle'),bannerCopy:$('completionCopy'),bannerAction:$('completionAction'),board:$('jeopardyBoard'),back:$('clueBackButton'),boardLabel:$('clueBoardLabel'),cat:$('clueCategory'),val:$('clueValue'),q:$('clueQuestion'),a:$('clueAnswer'),visual:$('clueVisual'),special:$('specialTag'),card:$('clueCard'),qs:$('questionStage'),as:$('answerStage'),reveal:$('revealButton'),ret:$('returnButton'),again:$('playAgainButton'),finalHome:$('finaleHomeButton'),dialog:$('resetDialog'),toast:$('toast'),soundHome:$('soundToggleHome'),soundGame:$('soundToggleGame')};
+const load=()=>{try{let x=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return{activeBoard:x.activeBoard===1?1:0,played:x.played||{},hasStarted:!!x.hasStarted,soundEnabled:x.soundEnabled!==false}}catch{return{activeBoard:0,played:{},hasStarted:false,soundEnabled:true}}};
+const S=load();let active=null,ctx=null,toastTimer=null;
+const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(S))}catch{}};
+const key=(b,c,q)=>`${b}-${c}-${q}`;
+const count=b=>B[b].cats.reduce((n,c,ci)=>n+c[4].reduce((m,_,qi)=>m+(S.played[key(b,ci,qi)]?1:0),0),0);
+const all=()=>count(0)===25&&count(1)===25;
+const screen=x=>{[E.home,E.game,E.clue,E.finale].forEach(y=>y.classList.add('hidden'));x.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})};
+const syncSound=()=>{let on=S.soundEnabled;E.soundHome.textContent=on?'🔊 Sound on':'🔇 Sound off';E.soundGame.textContent=on?'🔊':'🔇';[E.soundHome,E.soundGame].forEach(x=>{x.setAttribute('aria-pressed',String(on));x.classList.toggle('muted',!on)})};
+function audio(){if(!S.soundEnabled)return null;if(!ctx){let C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ctx=new C()}if(ctx.state==='suspended')ctx.resume();return ctx}
+function tone(t,f,d,type='triangle',g=.02){let c=audio();if(!c)return t;let o=c.createOscillator(),a=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t);a.gain.setValueAtTime(.0001,t);a.gain.linearRampToValueAtTime(g,t+.01);a.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(a).connect(c.destination);o.start(t);o.stop(t+d+.02);return t+d}
+function sound(n){let c=audio();if(!c)return;let t=c.currentTime+.01;if(n==='open'){t=tone(t,392,.07);tone(t,523,.09)}else if(n==='reveal'){t=tone(t,523,.07,'sine',.024);t=tone(t,659,.09,'sine',.024);tone(t,784,.16)}else if(n==='special'){[523,659,784,1047].forEach((f,i)=>tone(t+i*.07,f,.16,'triangle',.024))}else if(n==='done'){[523,659,784].forEach((f,i)=>tone(t+i*.08,f,.2,'triangle',.024))}else tone(t,420,.08,'sine',.018)}
+function home(){let p=Object.keys(S.played).length;E.start.textContent=S.hasStarted||p?'Resume Game →':'Start the Game ✨';E.fresh.classList.toggle('hidden',!p);syncSound();screen(E.home)}
+function board(b=S.activeBoard){S.activeBoard=b;S.hasStarted=true;save();let R=B[b],n=count(b),p=Math.round(n/25*100);E.kicker.textContent=R.kicker;E.title.textContent=R.title;E.subtitle.textContent=R.subtitle;E.prog.textContent=`${n} / 25 played`;E.pct.textContent=`${p}%`;E.bar.style.width=`${p}%`;E.b1.setAttribute('aria-selected',String(b===0));E.b2.setAttribute('aria-selected',String(b===1));E.board.replaceChildren();R.cats.forEach(c=>{let h=document.createElement('div');h.className='category-header';h.innerHTML=`<span class="emoji">${c[0]}</span><strong>${esc(c[2])}</strong><small>${esc(c[3])}</small>`;E.board.append(h)});VALUES.forEach((v,qi)=>R.cats.forEach((c,ci)=>{let k=key(b,ci,qi),used=!!S.played[k],x=document.createElement('button');x.type='button';x.className='clue-tile'+(used?' played':'');x.disabled=used;x.setAttribute('aria-label',`${c[2]}, $${v}${used?', played':''}`);x.innerHTML=used?'<span class="played-stamp"><b>✓</b> Played</span>':`<span>$${v}</span>`;x.onclick=()=>{sound('open');open(ci,qi)};E.board.append(x)}));E.banner.classList.toggle('hidden',n!==25);if(n===25){E.bannerTitle.textContent=`Board ${b+1} complete!`;E.bannerCopy.textContent=b===0?'Okay, that was the warm-up. Ready for the deep cuts?':'That was dangerously impressive Friends knowledge.';E.bannerAction.textContent=b===0?'Go to Board 2 →':all()?'Finish the Game ✨':'Back to Board 1';sound('done')}syncSound();screen(E.game)}
+function open(ci,qi){let b=S.activeBoard,c=B[b].cats[ci],d=c[4][qi];active={b,ci,qi,d};E.card.className=`clue-card ${c[1]}`;E.cat.textContent=`${c[0]} ${c[2]}`;E.val.textContent=`$${VALUES[qi]}`;E.boardLabel.textContent=`Board ${b+1} · $${VALUES[qi]}`;E.q.textContent=d[0];E.a.textContent=d[1];E.special.classList.toggle('hidden',!d[4]);E.visual.innerHTML=`<div style="text-align:center"><div style="font-size:clamp(3rem,8vw,5.5rem);line-height:1">${d[2]}</div><div style="margin-top:12px;font-weight:900;color:#493858">${esc(d[3])}</div></div>`;E.qs.classList.remove('hidden');E.as.classList.add('hidden');screen(E.clue);E.reveal.focus({preventScroll:true})}
+function spark(){let x=document.createElement('div');x.className='sparkle-burst';x.innerHTML='<span>✨</span><span>⭐</span><span>✨</span>';E.card.append(x);setTimeout(()=>x.remove(),1100)}
+function reveal(){if(!active)return;S.played[key(active.b,active.ci,active.qi)]=true;save();E.qs.classList.add('hidden');E.as.classList.remove('hidden');if(active.d[4])spark();sound(active.d[4]?'special':'reveal');E.ret.focus({preventScroll:true})}
+function back(){let b=active?active.b:S.activeBoard;active=null;sound('back');board(b)}
+function reset(show=true){S.activeBoard=0;S.played={};S.hasStarted=show;active=null;save();toast('All clues are fresh again ✨');show?board(0):home()}
+function toast(m){E.toast.textContent=m;E.toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>E.toast.classList.remove('show'),2200)}
+function finale(){screen(E.finale);confetti();sound('done')}
+function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;let C=['#6f4b8b','#df7a42','#3f90a3','#d8524e','#d79b17'];for(let i=0;i<30;i++){let x=document.createElement('span');Object.assign(x.style,{position:'fixed',zIndex:30,top:'-18px',left:`${5+Math.random()*90}%`,width:`${6+Math.random()*7}px`,height:`${8+Math.random()*9}px`,background:C[i%C.length],pointerEvents:'none',transition:`transform ${1.1+Math.random()*.8}s ease-in, top ${1.1+Math.random()*.8}s ease-in, opacity .35s 1s`});document.body.append(x);requestAnimationFrame(()=>{x.style.top=`${70+Math.random()*25}%`;x.style.transform=`translateX(${(Math.random()-.5)*160}px) rotate(${360+Math.random()*500}deg)`;x.style.opacity=0});setTimeout(()=>x.remove(),2200)}}
+function esc(t){let d=document.createElement('div');d.textContent=t;return d.innerHTML}
+E.start.onclick=()=>{sound('open');board(S.activeBoard)};E.fresh.onclick=()=>reset(true);E.homeBtn.onclick=()=>{sound('back');home()};E.b1.onclick=()=>{sound('open');board(0)};E.b2.onclick=()=>{sound('open');board(1)};E.back.onclick=back;E.reveal.onclick=reveal;E.ret.onclick=back;E.again.onclick=()=>reset(true);E.finalHome.onclick=home;[E.soundHome,E.soundGame].forEach(x=>x.onclick=()=>{S.soundEnabled=!S.soundEnabled;save();syncSound();if(S.soundEnabled)sound('open')});E.bannerAction.onclick=()=>{sound('open');S.activeBoard===0?board(1):all()?finale():board(0)};E.reset.onclick=()=>typeof E.dialog.showModal==='function'?E.dialog.showModal():confirm('Reset all played clues?')&&reset(true);E.dialog.onclose=()=>E.dialog.returnValue==='confirm'&&reset(true);document.addEventListener('keydown',e=>{if(E.clue.classList.contains('hidden'))return;if(e.key==='Escape')back();if(e.key==='Enter'&&!E.qs.classList.contains('hidden'))reveal()});syncSound();home();
 })();
