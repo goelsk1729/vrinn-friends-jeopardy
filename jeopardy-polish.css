@@ -1,0 +1,204 @@
+/* Jeopardy-first polish layer: keep the fun, remove spoiler-y clue visuals. */
+
+.clue-screen {
+  width: min(980px, 100%);
+  margin-inline: auto;
+}
+
+.clue-card {
+  min-height: 540px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: clamp(28px, 6vw, 64px);
+  border: 9px solid #102a66;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255,255,255,.08), transparent 30%),
+    linear-gradient(160deg, #173d8f 0%, #102a66 100%) !important;
+  color: #fff;
+  box-shadow: 0 24px 62px rgba(16,42,102,.28);
+}
+
+.clue-card::before,
+.clue-card::after {
+  pointer-events: none;
+}
+
+.clue-meta {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 auto 26px;
+}
+
+.category-pill,
+.value-pill {
+  justify-content: center;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  box-shadow: none !important;
+}
+
+.category-pill {
+  background: rgba(255,255,255,.11) !important;
+  color: #fff !important;
+}
+
+.value-pill {
+  background: rgba(255,215,90,.12) !important;
+  color: #ffd75a !important;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: 1.25rem;
+  letter-spacing: .03em;
+}
+
+.clue-stage,
+.answer-stage {
+  width: min(820px, 100%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.clue-label {
+  color: #ffd75a !important;
+  text-align: center;
+  letter-spacing: .22em;
+  margin-bottom: 16px !important;
+}
+
+#clueQuestion {
+  margin: 0 auto;
+  color: #fff !important;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.75rem, 4.2vw, 3rem);
+  line-height: 1.28;
+  text-wrap: balance;
+  max-width: 820px;
+}
+
+.reveal-btn,
+.answer-stage .primary-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin: 28px auto 0;
+}
+
+/* The scene-specific visual is a reward after revealing the answer, never a hint. */
+.clue-card:has(#questionStage:not(.hidden)) .clue-visual-wrap {
+  display: none !important;
+}
+
+.clue-card:has(#answerStage:not(.hidden)) .clue-visual-wrap {
+  display: flex !important;
+}
+
+.clue-visual-wrap {
+  width: 100%;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 auto 22px !important;
+  text-align: center;
+}
+
+.clue-visual {
+  width: min(245px, 78vw) !important;
+  min-height: 132px !important;
+  margin: 0 auto !important;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-radius: 20px !important;
+  background: rgba(255,255,255,.94) !important;
+  border: 1px solid rgba(255,255,255,.4) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.18) !important;
+  color: #30263a !important;
+}
+
+.clue-visual > * {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.special-tag {
+  background: rgba(255,215,90,.14) !important;
+  border-color: rgba(255,215,90,.28) !important;
+  color: #ffe899 !important;
+  text-align: center;
+}
+
+.answer-reveal {
+  width: min(820px, 100%);
+  margin: 0 auto;
+  padding: 22px 24px !important;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 4vw, 3rem) !important;
+  line-height: 1.25 !important;
+  font-weight: 800;
+  color: #102a66 !important;
+  background: #fffdf8 !important;
+  border-radius: 20px !important;
+  border: 2px solid rgba(255,215,90,.48) !important;
+  box-shadow: 0 16px 35px rgba(0,0,0,.18) !important;
+  text-wrap: balance;
+}
+
+/* Center the round heading more like a game-show presentation without hurting controls. */
+.board-heading > div:first-child {
+  text-align: center;
+}
+
+.round-kicker,
+#boardTitle {
+  text-align: center;
+}
+
+/* Keep the category board itself classic and centered. */
+.category-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center !important;
+}
+
+.category-header strong,
+.category-header small,
+.category-header .emoji {
+  text-align: center !important;
+}
+
+/* The top controls stay practical, but the clue's board/value label is visually quieter. */
+.clue-progress {
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .clue-card {
+    min-height: 500px;
+    padding: 30px 20px;
+  }
+
+  .clue-meta {
+    margin-bottom: 22px;
+  }
+
+  #clueQuestion {
+    font-size: clamp(1.6rem, 7vw, 2.35rem);
+  }
+
+  .answer-reveal {
+    font-size: clamp(1.6rem, 6.5vw, 2.4rem) !important;
+    padding: 19px 18px !important;
+  }
+}
