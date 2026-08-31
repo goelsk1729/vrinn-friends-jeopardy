@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#6f4b8b" />
-  <meta name="description" content="A birthday Friends Jeopardy game made for Vrinnn." />
+  <meta name="description" content="A cute and polished Friends Jeopardy birthday game for Vrinnn." />
   <title>The One With Vrinnn's Birthday — Friends Jeopardy</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
@@ -12,9 +12,14 @@
 <body>
   <div class="ambient ambient-one" aria-hidden="true"></div>
   <div class="ambient ambient-two" aria-hidden="true"></div>
+  <div class="ambient ambient-three" aria-hidden="true"></div>
 
   <main class="app-shell" id="app">
     <section class="screen home-screen" id="homeScreen" aria-labelledby="homeTitle">
+      <div class="top-actions home-top-actions">
+        <button class="sound-toggle" id="soundToggleHome" type="button" aria-pressed="true" aria-label="Toggle sound">🔊 Sound on</button>
+      </div>
+
       <div class="birthday-badge">🎂 Made especially for Vrinnn</div>
 
       <div class="door-card">
@@ -25,30 +30,41 @@
           <span>F</span><i class="dot red"></i><span>R</span><i class="dot blue"></i><span>I</span><i class="dot yellow"></i><span>E</span><i class="dot red"></i><span>N</span><i class="dot blue"></i><span>D</span><i class="dot yellow"></i><span>S</span>
         </div>
         <h2>JEOPARDY</h2>
-        <p class="hero-copy">Two boards. Fifty clues. No scorekeeping needed — just excellent Friends knowledge and extremely serious bragging rights.</p>
+        <p class="hero-copy">Two boards. Fifty clues. Maximum nostalgia. Serious bragging rights. And a tiny bit of chaos — as Friends intended.</p>
 
         <div class="hero-actions">
           <button class="primary-btn" id="startButton" type="button">Start the Game ✨</button>
           <button class="ghost-btn hidden" id="freshStartButton" type="button">Start Fresh</button>
         </div>
-        <p class="tiny-note">Your played tiles are remembered on this device.</p>
+        <p class="tiny-note">Played clues are remembered on this device, so your friend can pause and come back later.</p>
+      </div>
+
+      <div class="sticker-ribbon" aria-label="Friends-inspired decorations">
+        <span class="sticker-token">🛋️</span>
+        <span class="sticker-token">☕</span>
+        <span class="sticker-token">👕</span>
+        <span class="sticker-token">💄</span>
+        <span class="sticker-token">🍕</span>
+        <span class="sticker-token">🐧</span>
+        <span class="sticker-token">🥔</span>
+        <span class="sticker-token">🤫</span>
       </div>
 
       <div class="home-details" aria-label="Game details">
         <article>
           <span class="detail-icon">🛋️</span>
           <strong>Board 1</strong>
-          <small>The One Everyone Thinks They Know</small>
+          <small>The iconic moments board — big laughs, big quotes, big nostalgia.</small>
         </article>
         <article>
           <span class="detail-icon">☕</span>
           <strong>Board 2</strong>
-          <small>The One for the Real Fans</small>
+          <small>The deeper-cut board — made for the real Friends people.</small>
         </article>
         <article>
           <span class="detail-icon">💜</span>
-          <strong>Just for fun</strong>
-          <small>Reveal answers, mark clues played, enjoy the chaos.</small>
+          <strong>Sound + surprises</strong>
+          <small>Optional sounds, polished transitions and scene-inspired visual stickers.</small>
         </article>
       </div>
     </section>
@@ -59,7 +75,7 @@
           <span class="mini-couch" aria-hidden="true">🛋️</span>
           <div>
             <strong>Vrinnn's Friends Jeopardy</strong>
-            <small id="boardSubtitle">The One Everyone Thinks They Know</small>
+            <small id="boardSubtitle">The iconic moments board</small>
           </div>
         </div>
 
@@ -68,6 +84,7 @@
             <button type="button" role="tab" id="board1Tab" data-board="0">Board 1</button>
             <button type="button" role="tab" id="board2Tab" data-board="1">Board 2</button>
           </div>
+          <button class="sound-toggle compact" id="soundToggleGame" type="button" aria-pressed="true" aria-label="Toggle sound">🔊</button>
           <button class="icon-btn" id="homeButton" type="button" aria-label="Return to home">⌂</button>
           <button class="icon-btn" id="resetButton" type="button" aria-label="Reset game">↻</button>
         </div>
@@ -97,7 +114,7 @@
         <div class="jeopardy-board" id="jeopardyBoard"></div>
       </div>
 
-      <p class="board-tip">Tip: a clue is marked played only after you reveal the answer.</p>
+      <p class="board-tip">Tip: a clue is marked played after you reveal the answer.</p>
     </section>
 
     <section class="screen clue-screen hidden" id="clueScreen" aria-live="polite">
@@ -109,7 +126,12 @@
       <article class="clue-card" id="clueCard">
         <div class="clue-meta">
           <span class="category-pill" id="clueCategory">Category</span>
-          <span class="value-pill" id="clueValue">$200</span>
+          <span class="value-pill" id="clueValue">$100</span>
+        </div>
+
+        <div class="clue-visual-wrap">
+          <div class="clue-visual" id="clueVisual" aria-hidden="true"></div>
+          <span class="special-tag hidden" id="specialTag">✨ Special moment</span>
         </div>
 
         <div class="clue-stage" id="questionStage">
@@ -121,7 +143,6 @@
         <div class="answer-stage hidden" id="answerStage">
           <p class="clue-label">THE ANSWER</p>
           <div class="answer-reveal" id="clueAnswer">Answer goes here</div>
-          <p class="answer-note" id="answerNote">Nice one.</p>
           <button class="primary-btn" id="returnButton" type="button">Back to the Board →</button>
         </div>
       </article>
@@ -132,7 +153,7 @@
         <div class="finale-emoji">🛋️☕🎂</div>
         <p class="eyebrow">THE ONE WHERE YOU FINISHED IT</p>
         <h2 id="finaleTitle">Could you BE any more of a Friends fan?</h2>
-        <p>You made it through all 50 clues. Consider this your official invitation to rewatch the entire series immediately.</p>
+        <p>You made it through all 50 tiles. Consider this your official invitation to rewatch the entire series immediately.</p>
         <div class="finale-stamp">FOR VRINNN 💜</div>
         <div class="hero-actions">
           <button class="primary-btn" id="playAgainButton" type="button">Play Again</button>
